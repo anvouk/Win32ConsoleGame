@@ -161,10 +161,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ConsoleFramework.cpp" />
-    <ClCompile Include="src\test.cpp" />
+    <ClCompile Include="src\Console.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\console-framework\test.h" />
+    <ClInclude Include="include\console-framework\Console.h" />
+    <ClInclude Include="include\console-framework\Keyboard.h" />
+    <ClInclude Include="include\console-framework\Win32.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
