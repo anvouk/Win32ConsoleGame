@@ -60,10 +60,10 @@ std::unique_ptr<Map> Map::CreateMap(const WCHAR* rawData)
             switch (ch) {
                 case L'@':
                     spdlog::debug("Player found ({}:{})", x, y);
-                    tiles[y * max_x + x] = Tile::Create(ch, CC_COLOR(CC_GREEN, CC_BLACK), TileType::Player);
+                    tiles[y * max_x + x] = std::make_unique<Tile>(ch, CC_COLOR(CC_GREEN, CC_BLACK), TileType::Player);
                     continue;
                 default:
-                    tiles[y * max_x + x] = Tile::CreateFloor(ch, CC_DEFAULT);
+                    tiles[y * max_x + x] = std::make_unique<Tile>(ch, CC_DEFAULT, TileType::Floor);
                     continue;
             }
         }
