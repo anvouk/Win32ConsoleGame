@@ -243,15 +243,9 @@
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
       <LinkCompiled>true</LinkCompiled>
     </ClCompile>
-    <ClCompile Include="src\Map.cpp" />
-    <ClCompile Include="src\Tile.cpp" />
-    <ClCompile Include="src\View.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Map.h" />
     <ClInclude Include="src\Maps.inl" />
-    <ClInclude Include="src\Tile.h" />
-    <ClInclude Include="src\View.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

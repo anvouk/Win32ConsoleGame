@@ -1,5 +1,5 @@
-﻿#include "Map.h"
-#include "View.h"
+﻿#include "console-framework/Map.h"
+#include "console-framework/View.h"
 
 #include <tuple>
 #include <spdlog/spdlog.h>

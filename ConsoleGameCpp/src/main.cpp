@@ -1,7 +1,7 @@
 #include "console-framework/Console.h"
 
-#include "Map.h"
-#include "View.h"
+#include "console-framework/Map.h"
+#include "console-framework/View.h"
 
 #include "Maps.inl"
 

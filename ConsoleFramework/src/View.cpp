@@ -1,6 +1,5 @@
-﻿#include "View.h"
-#include "Map.h"
-
+﻿#include "console-framework/View.h"
+#include "console-framework/Map.h"
 #include "console-framework/Console.h"
 
 #define VIEW_PLAYER_OFFSET_X 10
