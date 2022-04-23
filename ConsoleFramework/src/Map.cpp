@@ -6,35 +6,35 @@
 #include <tuple>
 #include <spdlog/spdlog.h>
 
-static std::tuple<size_t, size_t> map_get_dimension(const WCHAR* ch_map)
+static std::tuple<size_t, size_t> GetMapSize(const WCHAR* ch_map)
 {
-    size_t max_x = 0;
-    size_t max_y = 0;
+    size_t maxX = 0;
+    size_t maxY = 0;
 
     size_t tmp_x = 0;
     for (const WCHAR* i = ch_map; *i != L'\0'; ++i) {
         if (*i == L'\n') {
-            max_y++;
+            maxY++;
             tmp_x = 0;
         }
         if (*i == L'\t') {
-            spdlog::warn("Found unwanted character '\\t' at ({}:{}) in the map", tmp_x, max_y);
+            spdlog::warn("Found unwanted character '\\t' at ({}:{}) in the map", tmp_x, maxY);
         }
         tmp_x++;
-        if (tmp_x > max_x) {
-            max_x = tmp_x;
+        if (tmp_x > maxX) {
+            maxX = tmp_x;
         }
     }
 
     return {
-        max_x,
-        max_y
+        maxX,
+        maxY
     };
 }
 
-Map::Map(int size_w, int size_h, std::unique_ptr<Tile>* tiles)
-    : size_w(size_w)
-    , size_h(size_h)
+Map::Map(int sizeW, int sizeH, std::unique_ptr<Tile>* tiles)
+    : sizeW(sizeW)
+    , sizeH(sizeH)
     , tiles(tiles)
 {}
 
@@ -46,17 +46,17 @@ Map::~Map()
 std::tuple<std::unique_ptr<Map>, std::unique_ptr<Player>> Map::CreateMap(const WCHAR* rawData)
 {
     spdlog::debug("Loading map");
-    const auto [max_x, max_y] = map_get_dimension(rawData);
-    spdlog::debug("Map size (w: {}, h: {})", max_x, max_y);
+    const auto [maxX, maxY] = GetMapSize(rawData);
+    spdlog::debug("Map size (w: {}, h: {})", maxX, maxY);
 
     // std::unique_ptr<Tile>[y][x]
-    const auto tiles = new std::unique_ptr<Tile>[max_x * max_y];
+    const auto tiles = new std::unique_ptr<Tile>[maxX * maxY];
 
     std::unique_ptr<Player> player;
 
-    for (size_t y = 0; y < max_y; ++y) {
-        for (size_t x = 0; x < max_x; ++x) {
-            const WCHAR ch = rawData[y * max_x + x];
+    for (size_t y = 0; y < maxY; ++y) {
+        for (size_t x = 0; x < maxX; ++x) {
+            const WCHAR ch = rawData[y * maxX + x];
             if (ch == L'\0')
                 goto done;
 
@@ -64,14 +64,14 @@ std::tuple<std::unique_ptr<Map>, std::unique_ptr<Player>> Map::CreateMap(const W
             switch (ch) {
                 case L'@':
                     spdlog::debug("Player found ({}:{})", x, y);
-                    tiles[y * max_x + x] = std::make_unique<Tile>(x, y, ch, CC_COLOR(CC_GREEN, CC_BLACK), TileType::Player);
-                    player = std::make_unique<Player>(tiles[y * max_x + x].get());
+                    tiles[y * maxX + x] = std::make_unique<Tile>(x, y, ch, CC_COLOR(CC_GREEN, CC_BLACK), TileType::Player);
+                    player = std::make_unique<Player>(tiles[y * maxX + x].get());
                     continue;
                 case L'\u2588':
-                    tiles[y * max_x + x] = std::make_unique<Tile>(x, y, ch, CC_COLOR(CC_RED, CC_BLACK), TileType::Impassable);
+                    tiles[y * maxX + x] = std::make_unique<Tile>(x, y, ch, CC_COLOR(CC_RED, CC_BLACK), TileType::Impassable);
                     continue;
                 default:
-                    tiles[y * max_x + x] = std::make_unique<Tile>(x, y, ch, CC_DEFAULT, TileType::Floor);
+                    tiles[y * maxX + x] = std::make_unique<Tile>(x, y, ch, CC_DEFAULT, TileType::Floor);
                     continue;
             }
         }
@@ -84,7 +84,7 @@ std::tuple<std::unique_ptr<Map>, std::unique_ptr<Player>> Map::CreateMap(const W
     }
 
     spdlog::debug("Map loaded successfully");
-    return std::make_tuple(std::make_unique<Map>(max_x, max_y, tiles), std::forward<std::unique_ptr<Player>>(player));
+    return std::make_tuple(std::make_unique<Map>(maxX, maxY, tiles), std::forward<std::unique_ptr<Player>>(player));
 }
 
 void Map::ClearDirtyTiles()
@@ -109,8 +109,8 @@ void Map::Draw(const View& view, const Player& player) const
 
     view.Clear();
 
-    for (int y = 0, ty = offset_y; y < view_h && ty < size_h; y++, ty++) {
-        for (int x = 0, tx = offset_x; x < view_w && tx < size_w; x++, tx++) {
+    for (int y = 0, ty = offset_y; y < view_h && ty < sizeH; y++, ty++) {
+        for (int x = 0, tx = offset_x; x < view_w && tx < sizeW; x++, tx++) {
             const auto& t = GetTile(tx, ty);
             Console::current().SetTextColor(t->GetColor());
             // optimization: ConsoleWriteStr does not respect colors but it's faster
