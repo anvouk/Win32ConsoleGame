@@ -38,6 +38,7 @@ Console::Console()
 Console::~Console()
 {
     ShowCursor();
+    SetTextColor(CC_DEFAULT);
 
     // use normal widows ascii for console
     _setmode(_fileno(stdin), _O_TEXT);
@@ -98,10 +99,16 @@ void Console::FillScreen(WCHAR ch) const
     }
 }
 
-void Console::WriteStr(const WCHAR* str, SHORT posX, SHORT posY) const
+void Console::WriteStr(const WCHAR* str, int posX, int posY) const
 {
     DWORD n;
-    WriteConsoleOutputCharacterW(consoleHandle, str, wcslen(str), {posX, posY}, &n);
+    WriteConsoleOutputCharacterW(
+        consoleHandle,
+        str,
+        static_cast<DWORD>(wcslen(str)),
+        {static_cast<SHORT>(posX), static_cast<SHORT>(posY)},
+        &n
+    );
 }
 
 void Console::ShowCursor(bool show) const
@@ -119,9 +126,12 @@ COORD Console::GetCursorPos() const
     return info.dwCursorPosition;
 }
 
-void Console::SetCursorPos(SHORT posX, SHORT posY) const
+void Console::SetCursorPos(int posX, int posY) const
 {
-    SetConsoleCursorPosition(consoleHandle, {posX, posY});
+    SetConsoleCursorPosition(
+        consoleHandle,
+        {static_cast<SHORT>(posX), static_cast<SHORT>(posY)}
+    );
 }
 
 // FIXME: ingoring current console color

@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+class Player;
 class Map;
 
 class View {
@@ -8,7 +9,7 @@ public:
 
     void Clear() const;
 
-    bool CalculatePlayerOffset(const Map& map);
+    bool CalculatePlayerOffset(const Map& map, const Player& player);
 
     [[nodiscard]] int GetWidth() const { return w; }
     [[nodiscard]] int GetHeight() const { return h; }

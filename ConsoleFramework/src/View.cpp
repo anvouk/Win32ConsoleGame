@@ -1,4 +1,6 @@
 ﻿#include "console-framework/View.h"
+
+#include "console-framework/Player.h"
 #include "console-framework/Map.h"
 #include "console-framework/Console.h"
 
@@ -40,10 +42,10 @@ void View::Clear() const
     }
 }
 
-bool View::CalculatePlayerOffset(const Map& map)
+bool View::CalculatePlayerOffset(const Map& map, const Player& player)
 {
-    int px = 0;
-    int py = 0;
+    int px = player.GetCurrentTile()->GetX();
+    int py = player.GetCurrentTile()->GetY();
     int view_w = w;
     int view_h = h;
     bool changed = false;

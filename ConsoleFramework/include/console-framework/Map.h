@@ -4,6 +4,7 @@
 
 #include <cassert>
 #include <memory>
+#include <queue>
 
 class View;
 
@@ -14,14 +15,18 @@ public:
 
     static std::unique_ptr<Map> CreateMap(const WCHAR* rawData);
 
-    FORCEINLINE const std::unique_ptr<Tile>& GetTile(int x, int y)
+    FORCEINLINE Tile* GetTile(int x, int y) const
     {
         assert(x < size_w);
         assert(y < size_h);
-        return tiles[y * size_w + x];
+        return tiles[y * size_w + x].get();
     }
 
-    void Draw(const View& view);
+    void ClearDirtyTiles();
+    void PushDirtyTile(Tile* tile);
+
+    void Draw(const View& view) const;
+    void DrawDelta(const View& view);
 
     [[nodiscard]] int GetSizeW() const { return size_w; }
     [[nodiscard]] int GetSizeH() const { return size_h; }
@@ -29,4 +34,5 @@ public:
 private:
     const int size_w, size_h;
     std::unique_ptr<Tile>* tiles;
+    std::queue<Tile*> dirtyTiles;
 };

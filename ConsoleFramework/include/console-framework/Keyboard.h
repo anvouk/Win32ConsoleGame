@@ -46,9 +46,9 @@ enum class key_codes {
  * @param keycode the virtual key code
  * @return 1 if it's pressed
  */
-FORCEINLINE int key_is_down(key_codes keycode)
+FORCEINLINE int key_is_down(int keycode)
 {
-    return GetAsyncKeyState(static_cast<int>(keycode));
+    return GetAsyncKeyState(keycode);
 }
 
 /**
@@ -56,7 +56,7 @@ FORCEINLINE int key_is_down(key_codes keycode)
  * @param keycode the virtual key code
  * @return 1 if the key state changed to pressed
  */
-FORCEINLINE int key_is_pressed(key_codes keycode)
+FORCEINLINE int key_is_pressed(int keycode)
 {
-    return (GetAsyncKeyState(static_cast<int>(keycode)) & 0x1);
+    return (GetAsyncKeyState(keycode) & 0x1);
 }

@@ -52,11 +52,11 @@ public:
     void SetScreenSize(int width, int height) const;
 
     void FillScreen(WCHAR ch) const;
-    void WriteStr(const WCHAR* str, SHORT posX, SHORT posY) const;
+    void WriteStr(const WCHAR* str, int posX, int posY) const;
 
     void ShowCursor(bool show = true) const;
     [[nodiscard]] COORD GetCursorPos() const;
-    void SetCursorPos(SHORT posX, SHORT posY) const;
+    void SetCursorPos(int posX, int posY) const;
 
     /**
      * Write a string which simulates a loading bar.

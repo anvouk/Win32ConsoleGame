@@ -60,10 +60,13 @@ std::unique_ptr<Map> Map::CreateMap(const WCHAR* rawData)
             switch (ch) {
                 case L'@':
                     spdlog::debug("Player found ({}:{})", x, y);
-                    tiles[y * max_x + x] = std::make_unique<Tile>(ch, CC_COLOR(CC_GREEN, CC_BLACK), TileType::Player);
+                    tiles[y * max_x + x] = std::make_unique<Tile>(x, y, ch, CC_COLOR(CC_GREEN, CC_BLACK), TileType::Player);
+                    continue;
+                case L'\u2588':
+                    tiles[y * max_x + x] = std::make_unique<Tile>(x, y, ch, CC_COLOR(CC_RED, CC_BLACK), TileType::Impassable);
                     continue;
                 default:
-                    tiles[y * max_x + x] = std::make_unique<Tile>(ch, CC_DEFAULT, TileType::Floor);
+                    tiles[y * max_x + x] = std::make_unique<Tile>(x, y, ch, CC_DEFAULT, TileType::Floor);
                     continue;
             }
         }
@@ -74,7 +77,19 @@ std::unique_ptr<Map> Map::CreateMap(const WCHAR* rawData)
     return std::make_unique<Map>(max_x, max_y, tiles);
 }
 
-void Map::Draw(const View& view)
+void Map::ClearDirtyTiles()
+{
+    while (!dirtyTiles.empty()) {
+        dirtyTiles.pop();
+    }
+}
+
+void Map::PushDirtyTile(Tile* tile)
+{
+    dirtyTiles.push(tile);
+}
+
+void Map::Draw(const View& view) const
 {
     const int view_w = view.GetWidth();
     const int view_h = view.GetHeight();
@@ -99,10 +114,24 @@ void Map::Draw(const View& view)
         }
     }
 
-    Console::current().SetTextColor(CC_COLOR(CC_WHITE, CC_BLACK));
+    Console::current().SetTextColor(CC_DEFAULT);
 
     /* set cursor to player */
     // Console::current().SetCursorPos(
     //     g_game.player->current_tile->x, g_game.player->current_tile->y
     // );
+}
+
+void Map::DrawDelta(const View& view)
+{
+    while (!dirtyTiles.empty()) {
+        const auto& t = dirtyTiles.front();
+        dirtyTiles.pop();
+        Console::current().SetTextColor(t->GetColor());
+        Console::current().SetCursorPos(
+            t->GetX() - view.GetOffsetX(),
+            t->GetY() - view.GetOffsetY()
+        );
+        putwchar(t->GetCh());
+    }
 }
