@@ -1,4 +1,6 @@
 ﻿#include "console-framework/Map.h"
+
+#include "console-framework/Player.h"
 #include "console-framework/View.h"
 
 #include <tuple>
@@ -41,7 +43,7 @@ Map::~Map()
     delete[] tiles;
 }
 
-std::unique_ptr<Map> Map::CreateMap(const WCHAR* rawData)
+std::tuple<std::unique_ptr<Map>, std::unique_ptr<Player>> Map::CreateMap(const WCHAR* rawData)
 {
     spdlog::debug("Loading map");
     const auto [max_x, max_y] = map_get_dimension(rawData);
@@ -49,6 +51,8 @@ std::unique_ptr<Map> Map::CreateMap(const WCHAR* rawData)
 
     // std::unique_ptr<Tile>[y][x]
     const auto tiles = new std::unique_ptr<Tile>[max_x * max_y];
+
+    std::unique_ptr<Player> player;
 
     for (size_t y = 0; y < max_y; ++y) {
         for (size_t x = 0; x < max_x; ++x) {
@@ -61,6 +65,7 @@ std::unique_ptr<Map> Map::CreateMap(const WCHAR* rawData)
                 case L'@':
                     spdlog::debug("Player found ({}:{})", x, y);
                     tiles[y * max_x + x] = std::make_unique<Tile>(x, y, ch, CC_COLOR(CC_GREEN, CC_BLACK), TileType::Player);
+                    player = std::make_unique<Player>(tiles[y * max_x + x].get());
                     continue;
                 case L'\u2588':
                     tiles[y * max_x + x] = std::make_unique<Tile>(x, y, ch, CC_COLOR(CC_RED, CC_BLACK), TileType::Impassable);
@@ -73,8 +78,13 @@ std::unique_ptr<Map> Map::CreateMap(const WCHAR* rawData)
     }
     done:
 
+    if (!player) {
+        spdlog::error("Player not found on map");
+        return std::make_tuple(nullptr, nullptr);
+    }
+
     spdlog::debug("Map loaded successfully");
-    return std::make_unique<Map>(max_x, max_y, tiles);
+    return std::make_tuple(std::make_unique<Map>(max_x, max_y, tiles), std::forward<std::unique_ptr<Player>>(player));
 }
 
 void Map::ClearDirtyTiles()
@@ -89,7 +99,7 @@ void Map::PushDirtyTile(Tile* tile)
     dirtyTiles.push(tile);
 }
 
-void Map::Draw(const View& view) const
+void Map::Draw(const View& view, const Player& player) const
 {
     const int view_w = view.GetWidth();
     const int view_h = view.GetHeight();
@@ -116,10 +126,10 @@ void Map::Draw(const View& view) const
 
     Console::current().SetTextColor(CC_DEFAULT);
 
-    /* set cursor to player */
-    // Console::current().SetCursorPos(
-    //     g_game.player->current_tile->x, g_game.player->current_tile->y
-    // );
+    // set cursor to player
+    Console::current().SetCursorPos(
+        player.GetCurrentTile()->GetX(), player.GetCurrentTile()->GetY()
+    );
 }
 
 void Map::DrawDelta(const View& view)

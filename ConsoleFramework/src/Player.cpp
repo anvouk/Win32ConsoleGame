@@ -38,7 +38,7 @@ bool Player::Move(Map& map, View& view, Tile* nextTile)
     DebugShowPos(view);
     if (view.CalculatePlayerOffset(map, *this)) {
         map.ClearDirtyTiles();
-        map.Draw(view);
+        map.Draw(view, *this);
     }
 
     return true;

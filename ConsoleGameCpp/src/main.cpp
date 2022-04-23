@@ -23,20 +23,21 @@ int main(int argc, const char* argv)
     View view = View();
     view.Clear();
 
-    auto map = Map::CreateMap(level_1);
-    map->Draw(view);
+    auto [map, player] = Map::CreateMap(level_1);
+    if (!(map && player)) {
+        return 1;
+    }
 
-    // TODO: use real player pos
-    Player player = Player(map->GetTile(11, 4));
+    map->Draw(view, *player);
 
     while (true) {
         if (key_is_down(VK_ESCAPE)) {
             break;
         }
 
-        /* debug purposes only */
+        // debug purposes only
         if (key_is_down(VK_F1)) {
-            map->Draw(view);
+            map->Draw(view, *player);
         }
 
         map->DrawDelta(view);
@@ -44,36 +45,36 @@ int main(int argc, const char* argv)
         // player inputs
         // TODO: cleanup
         if (key_is_down(VK_UP)) {
-            int px = player.GetCurrentTile()->GetX();
-            int py = player.GetCurrentTile()->GetY();
+            int px = player->GetCurrentTile()->GetX();
+            int py = player->GetCurrentTile()->GetY();
             int new_coord_val = py - 1;
             if (new_coord_val >= 0) {
                 Console::current().SetCursorPos(px, new_coord_val);
-                player.Move(*map, view, map->GetTile(px, new_coord_val));
+                player->Move(*map, view, map->GetTile(px, new_coord_val));
             }
         } else if (key_is_down(VK_DOWN)) {
-            int px = player.GetCurrentTile()->GetX();
-            int py = player.GetCurrentTile()->GetY();
+            int px = player->GetCurrentTile()->GetX();
+            int py = player->GetCurrentTile()->GetY();
             int new_coord_val = py + 1;
             if (new_coord_val < map->GetSizeH()) {
                 Console::current().SetCursorPos(px, new_coord_val);
-                player.Move(*map, view, map->GetTile(px, new_coord_val));
+                player->Move(*map, view, map->GetTile(px, new_coord_val));
             }
         } else if (key_is_down(VK_LEFT)) {
-            int px = player.GetCurrentTile()->GetX();
-            int py = player.GetCurrentTile()->GetY();
+            int px = player->GetCurrentTile()->GetX();
+            int py = player->GetCurrentTile()->GetY();
             int new_coord_val = px - 1;
             if (new_coord_val >= 0) {
                 Console::current().SetCursorPos(new_coord_val, py);
-                player.Move(*map, view, map->GetTile(new_coord_val, py));
+                player->Move(*map, view, map->GetTile(new_coord_val, py));
             }
         } else if (key_is_down(VK_RIGHT)) {
-            int px = player.GetCurrentTile()->GetX();
-            int py = player.GetCurrentTile()->GetY();
+            int px = player->GetCurrentTile()->GetX();
+            int py = player->GetCurrentTile()->GetY();
             int new_coord_val = px + 1;
             if (new_coord_val < map->GetSizeW()) {
                 Console::current().SetCursorPos(new_coord_val, py);
-                player.Move(*map, view, map->GetTile(new_coord_val, py));
+                player->Move(*map, view, map->GetTile(new_coord_val, py));
             }
         }
 
