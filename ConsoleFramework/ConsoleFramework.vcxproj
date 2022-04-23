@@ -468,9 +468,6 @@
     <ClInclude Include="include\console-framework\View.h" />
     <ClInclude Include="include\console-framework\Win32.h" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="README.md" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
