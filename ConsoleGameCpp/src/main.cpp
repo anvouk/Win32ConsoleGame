@@ -13,7 +13,7 @@
 
 int main(int argc, const char* argv)
 {
-    auto file_logger = spdlog::basic_logger_mt("logger", "logs.log");
+    auto file_logger = spdlog::basic_logger_mt("logger", "./logs.log");
     spdlog::set_default_logger(file_logger);
     spdlog::set_level(spdlog::level::trace);
 
@@ -36,12 +36,12 @@ int main(int argc, const char* argv)
     while (true) {
         fps.BeginFpsCap();
 
-        if (key_is_down(VK_ESCAPE)) {
+        if (KeyIsDown(VK_ESCAPE)) {
             break;
         }
 
         // debug purposes only
-        if (key_is_down(VK_F1)) {
+        if (KeyIsDown(VK_F1)) {
             map->Draw(view, *player);
         }
 
@@ -49,7 +49,7 @@ int main(int argc, const char* argv)
 
         // player inputs
         // TODO: cleanup
-        if (key_is_down(VK_UP)) {
+        if (KeyIsDown(VK_UP)) {
             int px = player->GetCurrentTile()->GetX();
             int py = player->GetCurrentTile()->GetY();
             int new_coord_val = py - 1;
@@ -57,7 +57,7 @@ int main(int argc, const char* argv)
                 Console::current().SetCursorPos(px, new_coord_val);
                 player->Move(*map, view, map->GetTile(px, new_coord_val));
             }
-        } else if (key_is_down(VK_DOWN)) {
+        } else if (KeyIsDown(VK_DOWN)) {
             int px = player->GetCurrentTile()->GetX();
             int py = player->GetCurrentTile()->GetY();
             int new_coord_val = py + 1;
@@ -65,7 +65,7 @@ int main(int argc, const char* argv)
                 Console::current().SetCursorPos(px, new_coord_val);
                 player->Move(*map, view, map->GetTile(px, new_coord_val));
             }
-        } else if (key_is_down(VK_LEFT)) {
+        } else if (KeyIsDown(VK_LEFT)) {
             int px = player->GetCurrentTile()->GetX();
             int py = player->GetCurrentTile()->GetY();
             int new_coord_val = px - 1;
@@ -73,7 +73,7 @@ int main(int argc, const char* argv)
                 Console::current().SetCursorPos(new_coord_val, py);
                 player->Move(*map, view, map->GetTile(new_coord_val, py));
             }
-        } else if (key_is_down(VK_RIGHT)) {
+        } else if (KeyIsDown(VK_RIGHT)) {
             int px = player->GetCurrentTile()->GetX();
             int py = player->GetCurrentTile()->GetY();
             int new_coord_val = px + 1;

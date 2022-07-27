@@ -2,7 +2,7 @@
 
 #include "Win32.h"
 
-enum class key_codes {
+enum class KeyboardKeyCodes {
     key_0 = 0x30,
     key_1 = 0x31,
     key_2 = 0x32,
@@ -46,7 +46,7 @@ enum class key_codes {
  * @param keycode the virtual key code
  * @return 1 if it's pressed
  */
-FORCEINLINE int key_is_down(int keycode)
+FORCEINLINE int KeyIsDown(int keycode)
 {
     return GetAsyncKeyState(keycode);
 }
@@ -56,7 +56,7 @@ FORCEINLINE int key_is_down(int keycode)
  * @param keycode the virtual key code
  * @return 1 if the key state changed to pressed
  */
-FORCEINLINE int key_is_pressed(int keycode)
+FORCEINLINE int KeyIsPressed(int keycode)
 {
     return (GetAsyncKeyState(keycode) & 0x1);
 }
