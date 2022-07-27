@@ -18,9 +18,9 @@ public:
 
     FORCEINLINE Tile* GetTile(int x, int y) const
     {
-        assert(x < sizeW);
-        assert(y < sizeH);
-        return tiles[y * sizeW + x].get();
+        assert(x < m_sizeW);
+        assert(y < m_sizeH);
+        return m_tiles[y * m_sizeW + x].get();
     }
 
     void ClearDirtyTiles();
@@ -29,11 +29,11 @@ public:
     void Draw(const View& view, const Player& player) const;
     void DrawDelta(const View& view);
 
-    [[nodiscard]] int GetSizeW() const { return sizeW; }
-    [[nodiscard]] int GetSizeH() const { return sizeH; }
+    [[nodiscard]] int GetSizeW() const { return m_sizeW; }
+    [[nodiscard]] int GetSizeH() const { return m_sizeH; }
 
 private:
-    const int sizeW, sizeH;
-    std::unique_ptr<Tile>* tiles;
-    std::queue<Tile*> dirtyTiles;
+    const int m_sizeW, m_sizeH;
+    std::unique_ptr<Tile>* m_tiles;
+    std::queue<Tile*> m_dirtyTiles;
 };

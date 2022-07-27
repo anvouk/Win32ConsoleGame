@@ -10,20 +10,20 @@
 View::View()
 {
     COORD screenSize = Console::current().GetScreenSize();
-    w = screenSize.X - 20;
-    h = screenSize.Y - 3;
+    m_w = screenSize.X - 20;
+    m_h = screenSize.Y - 3;
 
-    offsetX = 0;
-    offsetY = 0;
+    m_offsetX = 0;
+    m_offsetY = 0;
 
     Console::current().SetTextColor(CC_COLOR(CC_WHITE, CC_BLACK));
 
-    for (int i = 0; i <= w; i++) {
-        Console::current().SetCursorPos(i, h);
+    for (int i = 0; i <= m_w; i++) {
+        Console::current().SetCursorPos(i, m_h);
         putwchar(L'_');
     }
-    for (int i = 0; i <= h; i++) {
-        Console::current().SetCursorPos(w, i);
+    for (int i = 0; i <= m_h; i++) {
+        Console::current().SetCursorPos(m_w, i);
         putwchar(L'|');
     }
 
@@ -32,8 +32,8 @@ View::View()
 
 void View::Clear() const
 {
-    int viewW = w;
-    int viewH = h;
+    const int viewW = m_w;
+    const int viewH = m_h;
     for (int x = 0; x < viewW; x++) {
         for (int y = 0; y < viewH; y++) {
             Console::current().SetCursorPos(x, y);
@@ -46,38 +46,38 @@ bool View::CalculatePlayerOffset(const Map& map, const Player& player)
 {
     const int px = player.GetCurrentTile()->GetX();
     const int py = player.GetCurrentTile()->GetY();
-    const int viewW = w;
-    const int viewH = h;
+    const int viewW = m_w;
+    const int viewH = m_h;
     bool changed = false;
 
     /* left */
-    if (px < (offsetX + VIEW_PLAYER_OFFSET_X)) {
+    if (px < (m_offsetX + VIEW_PLAYER_OFFSET_X)) {
         if (px - VIEW_PLAYER_OFFSET_X > 0) {
-            offsetX -= VIEW_PLAYER_OFFSET_X;
+            m_offsetX -= VIEW_PLAYER_OFFSET_X;
             changed = true;
         }
     }
 
     /* right */
-    if ((px - offsetX) > (viewW - VIEW_PLAYER_OFFSET_X)) {
+    if ((px - m_offsetX) > (viewW - VIEW_PLAYER_OFFSET_X)) {
         if (px + VIEW_PLAYER_OFFSET_X < map.GetSizeW()) {
-            offsetX += VIEW_PLAYER_OFFSET_X;
+            m_offsetX += VIEW_PLAYER_OFFSET_X;
             changed = true;
         }
     }
 
     /* up */
-    if (py < (offsetY + VIEW_PLAYER_OFFSET_Y)) {
+    if (py < (m_offsetY + VIEW_PLAYER_OFFSET_Y)) {
         if (py - VIEW_PLAYER_OFFSET_Y > 0) {
-            offsetY -= VIEW_PLAYER_OFFSET_Y;
+            m_offsetY -= VIEW_PLAYER_OFFSET_Y;
             changed = true;
         }
     }
 
     /* down */
-    if ((py - offsetY) > (viewH - VIEW_PLAYER_OFFSET_Y)) {
+    if ((py - m_offsetY) > (viewH - VIEW_PLAYER_OFFSET_Y)) {
         if (py + VIEW_PLAYER_OFFSET_Y < map.GetSizeH()) {
-            offsetY += VIEW_PLAYER_OFFSET_Y;
+            m_offsetY += VIEW_PLAYER_OFFSET_Y;
             changed = true;
         }
     }

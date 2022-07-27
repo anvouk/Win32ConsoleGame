@@ -33,14 +33,14 @@ static std::tuple<size_t, size_t> GetMapSize(const WCHAR* ch_map)
 }
 
 Map::Map(int sizeW, int sizeH, std::unique_ptr<Tile>* tiles)
-    : sizeW(sizeW)
-    , sizeH(sizeH)
-    , tiles(tiles)
+    : m_sizeW(sizeW)
+    , m_sizeH(sizeH)
+    , m_tiles(tiles)
 {}
 
 Map::~Map()
 {
-    delete[] tiles;
+    delete[] m_tiles;
 }
 
 std::tuple<std::unique_ptr<Map>, std::unique_ptr<Player>> Map::CreateMap(const WCHAR* rawData)
@@ -89,14 +89,14 @@ std::tuple<std::unique_ptr<Map>, std::unique_ptr<Player>> Map::CreateMap(const W
 
 void Map::ClearDirtyTiles()
 {
-    while (!dirtyTiles.empty()) {
-        dirtyTiles.pop();
+    while (!m_dirtyTiles.empty()) {
+        m_dirtyTiles.pop();
     }
 }
 
 void Map::PushDirtyTile(Tile* tile)
 {
-    dirtyTiles.push(tile);
+    m_dirtyTiles.push(tile);
 }
 
 void Map::Draw(const View& view, const Player& player) const
@@ -109,8 +109,8 @@ void Map::Draw(const View& view, const Player& player) const
 
     view.Clear();
 
-    for (int y = 0, ty = offset_y; y < view_h && ty < sizeH; y++, ty++) {
-        for (int x = 0, tx = offset_x; x < view_w && tx < sizeW; x++, tx++) {
+    for (int y = 0, ty = offset_y; y < view_h && ty < m_sizeH; y++, ty++) {
+        for (int x = 0, tx = offset_x; x < view_w && tx < m_sizeW; x++, tx++) {
             const auto& t = GetTile(tx, ty);
             Console::current().SetTextColor(t->GetColor());
             // optimization: ConsoleWriteStr does not respect colors but it's faster
@@ -134,9 +134,9 @@ void Map::Draw(const View& view, const Player& player) const
 
 void Map::DrawDelta(const View& view)
 {
-    while (!dirtyTiles.empty()) {
-        const auto& t = dirtyTiles.front();
-        dirtyTiles.pop();
+    while (!m_dirtyTiles.empty()) {
+        const auto& t = m_dirtyTiles.front();
+        m_dirtyTiles.pop();
         Console::current().SetTextColor(t->GetColor());
         Console::current().SetCursorPos(
             t->GetX() - view.GetOffsetX(),

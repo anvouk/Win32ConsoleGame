@@ -7,11 +7,11 @@
 #include <fmt/format.h>
 
 Player::Player(Tile* onTile)
-    : ch(L'@')
-    , color(CC_COLOR(CC_GREEN, CC_BLACK))
-    , prevTileCh(L' ')
-    , prevTileColor(CC_DEFAULT)
-    , currentTile(onTile)
+    : m_ch(L'@')
+    , m_color(CC_COLOR(CC_GREEN, CC_BLACK))
+    , m_prevTileCh(L' ')
+    , m_prevTileColor(CC_DEFAULT)
+    , m_currentTile(onTile)
 {}
 
 bool Player::Move(Map& map, View& view, Tile* nextTile)
@@ -21,19 +21,19 @@ bool Player::Move(Map& map, View& view, Tile* nextTile)
     }
 
     // restore previous tile
-    currentTile->UpdateCh(prevTileCh);
-    currentTile->UpdateColor(prevTileColor);
-    map.PushDirtyTile(currentTile);
+    m_currentTile->UpdateCh(m_prevTileCh);
+    m_currentTile->UpdateColor(m_prevTileColor);
+    map.PushDirtyTile(m_currentTile);
 
     // backup new tile data
-    prevTileCh = nextTile->GetCh();
-    prevTileColor = nextTile->GetColor();
+    m_prevTileCh = nextTile->GetCh();
+    m_prevTileColor = nextTile->GetColor();
 
     // move to the new tile
-    currentTile = nextTile;
-    currentTile->UpdateCh(ch);
-    currentTile->UpdateColor(color);
-    map.PushDirtyTile(currentTile);
+    m_currentTile = nextTile;
+    m_currentTile->UpdateCh(m_ch);
+    m_currentTile->UpdateColor(m_color);
+    map.PushDirtyTile(m_currentTile);
 
     DebugShowPos(view);
     if (view.CalculatePlayerOffset(map, *this)) {
@@ -51,8 +51,8 @@ void Player::DebugShowPos(const View& view) const
         str,
         128,
         L"Player tile(x: %d, y: %d)(offset: (%d, %d))      ",
-        currentTile->GetX(),
-        currentTile->GetY(),
+        m_currentTile->GetX(),
+        m_currentTile->GetY(),
         view.GetOffsetX(),
         view.GetOffsetY()
     );

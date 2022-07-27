@@ -16,11 +16,11 @@ public:
     void EndFpsCap() const;
 
 private:
-    static constexpr int GAME_FPS = 30;
-    static constexpr int GAME_TICKS_PER_FRAME = 1000 / GAME_FPS;
+    static constexpr int s_gameFps = 30;
+    static constexpr int s_gameTicksPerFrame = 1000 / s_gameFps;
 
-    LARGE_INTEGER firstTick;
-    LARGE_INTEGER ticksPerSecond;
+    LARGE_INTEGER m_firstTick;
+    LARGE_INTEGER m_ticksPerSecond;
 
-    uint64_t startTicks = 0;
+    uint64_t m_startTicks = 0;
 };

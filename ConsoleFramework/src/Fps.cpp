@@ -2,26 +2,26 @@
 
 Fps::Fps()
 {
-    QueryPerformanceFrequency(&ticksPerSecond);
-    QueryPerformanceCounter(&firstTick);
+    QueryPerformanceFrequency(&m_ticksPerSecond);
+    QueryPerformanceCounter(&m_firstTick);
 }
 
 uint64_t Fps::GetTicks() const
 {
     LARGE_INTEGER now;
     QueryPerformanceCounter(&now);
-    return static_cast<uint64_t>(((now.QuadPart - firstTick.QuadPart) * 1000) / ticksPerSecond.QuadPart);
+    return static_cast<uint64_t>(((now.QuadPart - m_firstTick.QuadPart) * 1000) / m_ticksPerSecond.QuadPart);
 }
 
 void Fps::BeginFpsCap()
 {
-    startTicks = GetTicks();
+    m_startTicks = GetTicks();
 }
 
 void Fps::EndFpsCap() const
 {
-    const uint64_t deltaTicks = GetTicks() - startTicks;
-    if (deltaTicks < GAME_TICKS_PER_FRAME) {
-        Sleep(GAME_TICKS_PER_FRAME - deltaTicks);
+    const uint64_t deltaTicks = GetTicks() - m_startTicks;
+    if (deltaTicks < s_gameTicksPerFrame) {
+        Sleep(s_gameTicksPerFrame - deltaTicks);
     }
 }

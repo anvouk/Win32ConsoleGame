@@ -69,5 +69,5 @@ public:
     void WritePaddedStr(const PADDED_STR* padStr, BOOL newline, int breakAt) const;
 
 private:
-    HANDLE consoleHandle;
+    HANDLE m_consoleHandle;
 };

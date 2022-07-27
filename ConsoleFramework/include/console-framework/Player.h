@@ -16,15 +16,15 @@ public:
 
     void DebugShowPos(const View& view) const;
 
-    [[nodiscard]] Tile* GetCurrentTile() const { return currentTile; }
+    [[nodiscard]] Tile* GetCurrentTile() const { return m_currentTile; }
 
 private:
-    WCHAR ch;
-    CColor color;
+    WCHAR m_ch;
+    CColor m_color;
 
     // TODO: find better way to handle this
-    WCHAR prevTileCh;
-    CColor prevTileColor;
+    WCHAR m_prevTileCh;
+    CColor m_prevTileColor;
 
-    Tile* currentTile;
+    Tile* m_currentTile;
 };
