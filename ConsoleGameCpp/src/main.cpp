@@ -4,6 +4,7 @@
 #include "console-framework/View.h"
 
 #include "Maps.inl"
+#include "console-framework/Fps.h"
 #include "console-framework/Player.h"
 #include "console-framework/Keyboard.h"
 
@@ -30,7 +31,11 @@ int main(int argc, const char* argv)
 
     map->Draw(view, *player);
 
+    Fps fps;
+
     while (true) {
+        fps.BeginFpsCap();
+
         if (key_is_down(VK_ESCAPE)) {
             break;
         }
@@ -78,7 +83,7 @@ int main(int argc, const char* argv)
             }
         }
 
-        Sleep(50);
+        fps.EndFpsCap();
     }
 
     spdlog::info("closing app");
